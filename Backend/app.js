@@ -17,13 +17,30 @@ app.use('/api',authrouter)
 import postrouter from './routes/posts.route.js'
 app.use("/api",postrouter)
 
+import {
+  metricsMiddleware,
+  register,
+} from "./middlewares/prometheus.js";
+
+app.use(metricsMiddleware);
+
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "UP",
+  });
+});
+
 
 
 // Db Connection and server up 
 import connectDB from './config/db.js'
 connectDB(process.env.MONGODB_URL).then(()=>{
     app.listen(process.env.PORT,()=>{
-        const applog = debug("development:app")
-        applog(`server up ! http://localhost:${process.env.PORT}`)
+        console.log(`server up ! http://localhost:${process.env.PORT}`)
     })
 })
