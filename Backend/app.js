@@ -23,7 +23,6 @@ app.use("/api",postrouter)
 import connectDB from './config/db.js'
 connectDB(process.env.MONGODB_URL).then(()=>{
     app.listen(process.env.PORT,()=>{
-        const applog = debug("development:app")
-        applog(`server up ! http://localhost:${process.env.PORT}`)
+        console.log(`server up ! http://localhost:${process.env.PORT}`)
     })
 })
